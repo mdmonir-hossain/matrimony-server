@@ -27,29 +27,29 @@ async function run() {
       const cursor = biodatasCollection
         .find({ AccountType: "Premium" })
         .limit(6);
-        ;
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get("/allbiodatas", async (req, res) => {
+      const cursor = biodatasCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
 
     app.get("/maleCounter", async (req, res) => {
       const cursor = biodatasCollection.find({ BiodataType: "Male" });
-        ;
-        ;
       const result = await cursor.toArray();
       res.send(result);
     });
 
     app.get("/femaleCounter", async (req, res) => {
-      const cursor = biodatasCollection
-        .find({ BiodataType: "Female" });
+      const cursor = biodatasCollection.find({ BiodataType: "Female" });
       const result = await cursor.toArray();
       res.send(result);
     });
-    
+
     app.get("/marriagesCompleted", async (req, res) => {
-      const cursor = biodatasCollection
-        .find({ MarriageCompleted: "Yes" });
+      const cursor = biodatasCollection.find({ MarriageCompleted: "Yes" });
       const result = await cursor.toArray();
       res.send(result);
     });
