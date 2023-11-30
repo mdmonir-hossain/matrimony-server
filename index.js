@@ -31,6 +31,7 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+
     app.get("/maleCounter", async (req, res) => {
       const cursor = biodatasCollection.find({ BiodataType: "Male" });
         ;
@@ -38,17 +39,17 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+
     app.get("/femaleCounter", async (req, res) => {
       const cursor = biodatasCollection
-        .find({ BiodataType: "Female" })
-        .limit(6);
+        .find({ BiodataType: "Female" });
       const result = await cursor.toArray();
       res.send(result);
     });
+    
     app.get("/marriagesCompleted", async (req, res) => {
       const cursor = biodatasCollection
-        .find({ MarriageCompleted: "Yes" })
-        .limit(6);
+        .find({ MarriageCompleted: "Yes" });
       const result = await cursor.toArray();
       res.send(result);
     });
