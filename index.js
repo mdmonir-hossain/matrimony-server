@@ -22,6 +22,9 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const biodatasCollection = client.db("biodatasdb").collection("biodatas");
+    const addtofavouriteCollection = client
+      .db("biodatasdb")
+      .collection("addtofavourite");
 
     app.post("/allbiodatas", async (req, res) => {
       const editbiodata = req.body;
@@ -30,8 +33,18 @@ async function run() {
       res.send(result);
     });
 
+    app.post("/addtofavourite", async (req, res) => {
+      const addtofavourite = req.body;
+      console.log(addtofavourite);
+      const result = await addtofavouriteCollection.insertOne(addtofavourite);
+      res.send(result);
+    });
 
-
+    app.get("/addtofavourite", async (req, res) => {
+      const cursor = addtofavouriteCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
     app.get("/biodatas", async (req, res) => {
       const cursor = biodatasCollection
         .find({ AccountType: "Premium" })
@@ -45,10 +58,21 @@ async function run() {
       let query = {};
       const options = {
         sort: {
-          Age: filter.sort === 'asc' ? 1 : -1
+          Age: filter.sort === "asc" ? 1 : -1,
         },
       };
       const cursor = biodatasCollection.find(query, options);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
+    app.get("/viewbiodatas", async (req, res) => {
+      console.log(req.query.userEmail);
+      let query = {};
+      if (req.query?.userEmail) {
+        query = { userEmail: req.query.userEmail };
+      }
+      const cursor = biodatasCollection.find(query);
       const result = await cursor.toArray();
       res.send(result);
     });
