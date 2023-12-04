@@ -23,6 +23,15 @@ async function run() {
   try {
     const biodatasCollection = client.db("biodatasdb").collection("biodatas");
 
+    app.post("/allbiodatas", async (req, res) => {
+      const editbiodata = req.body;
+      console.log(editbiodata);
+      const result = await biodatasCollection.insertOne(editbiodata);
+      res.send(result);
+    });
+
+
+
     app.get("/biodatas", async (req, res) => {
       const cursor = biodatasCollection
         .find({ AccountType: "Premium" })
@@ -31,7 +40,15 @@ async function run() {
       res.send(result);
     });
     app.get("/allbiodatas", async (req, res) => {
-      const cursor = biodatasCollection.find();
+      const filter = req.query;
+      console.log(filter);
+      let query = {};
+      const options = {
+        sort: {
+          Age: filter.sort === 'asc' ? 1 : -1
+        },
+      };
+      const cursor = biodatasCollection.find(query, options);
       const result = await cursor.toArray();
       res.send(result);
     });
