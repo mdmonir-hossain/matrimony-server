@@ -95,6 +95,12 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/premiumCount", async (req, res) => {
+      const cursor = biodatasCollection.find({ AccountType: "Premium" });
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
