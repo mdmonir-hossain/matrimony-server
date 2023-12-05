@@ -56,6 +56,14 @@ async function run() {
       const filter = req.query;
       console.log(filter);
       let query = {};
+      if (req.query.gender) {
+        query = { BiodataType: req.query.gender };
+      }
+       if (req.query.division) {
+        query = { PermanentDivisionName: req.query.division };
+      }
+ 
+      
       const options = {
         sort: {
           Age: filter.sort === "asc" ? 1 : -1,
