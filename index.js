@@ -22,6 +22,9 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     const biodatasCollection = client.db("biodatasdb").collection("biodatas");
+    const reviewsdataCollection = client
+      .db("biodatasdb")
+      .collection("reviews");
     const addtofavouriteCollection = client
       .db("biodatasdb")
       .collection("addtofavourite");
@@ -37,6 +40,25 @@ async function run() {
       const addtofavourite = req.body;
       console.log(addtofavourite);
       const result = await addtofavouriteCollection.insertOne(addtofavourite);
+      res.send(result);
+    });
+
+    app.post("/reviews", async (req, res) => {
+      const reviewsdata = req.body;
+      console.log(reviewsdata);
+      const result = await reviewsdataCollection.insertOne(reviewsdata);
+      res.send(result);
+    });
+
+     app.get("/reviews", async (req, res) => {
+       const cursor = reviewsdataCollection.find();
+       const result = await cursor.toArray();
+       res.send(result);
+     });
+    app.delete("/Delete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await addtofavouriteCollection.deleteOne(query);
       res.send(result);
     });
 
@@ -59,11 +81,10 @@ async function run() {
       if (req.query.gender) {
         query = { BiodataType: req.query.gender };
       }
-       if (req.query.division) {
+      if (req.query.division) {
         query = { PermanentDivisionName: req.query.division };
       }
- 
-      
+
       const options = {
         sort: {
           Age: filter.sort === "asc" ? 1 : -1,
