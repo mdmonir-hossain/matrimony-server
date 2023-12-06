@@ -36,6 +36,8 @@ async function run() {
       res.send(result);
     });
 
+   
+    
     app.post("/addtofavourite", async (req, res) => {
       const addtofavourite = req.body;
       console.log(addtofavourite);
@@ -49,6 +51,7 @@ async function run() {
       const result = await reviewsdataCollection.insertOne(reviewsdata);
       res.send(result);
     });
+      
 
      app.get("/reviews", async (req, res) => {
        const cursor = reviewsdataCollection.find();
@@ -74,8 +77,20 @@ async function run() {
       const result = await cursor.toArray();
       res.send(result);
     });
+    app.get("/revenue", async (req, res) => {
+      const cursor = biodatasCollection
+        .find();
+        
+      const result = await cursor.toArray();
+      res.send(result);
+    });
     app.get("/allbiodatas", async (req, res) => {
       const filter = req.query;
+      const page = filter.page;
+      console.log(page)
+      const pageNumber = parseInt(page);
+      const perPage = 5;
+      const skip = pageNumber * perPage;
       console.log(filter);
       let query = {};
       if (req.query.gender) {
@@ -90,10 +105,18 @@ async function run() {
           Age: filter.sort === "asc" ? 1 : -1,
         },
       };
-      const cursor = biodatasCollection.find(query, options);
+      const cursor = biodatasCollection
+        .find(query, options)
+        .skip(skip)
+        .limit(perPage);
       const result = await cursor.toArray();
-      res.send(result);
+      const biodatascount = await biodatasCollection.countDocuments();
+      res.send({ result, biodatascount });
+
+      
     });
+
+
 
     app.get("/viewbiodatas", async (req, res) => {
       console.log(req.query.userEmail);
